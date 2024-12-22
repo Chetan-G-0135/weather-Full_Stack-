@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+    
+        body {
+            background-color: #f0f8ff;
+            font-family: 'Arial', sans-serif;
+            color: #444;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        
+        .input-field {
+            border-radius: 25px;
+            border: 2px solid #2c3e50;
+            padding: 10px;
+            font-size: 1.2rem;
+        }
+
+        
+        .weather-info {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .weather-info h3 {
+            font-size: 2rem;
+            color: #2980b9;
+        }
+
+        .weather-info p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .weather-info .icon {
+            width: 80px;
+            height: 80px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            border-radius: 30px;
+            font-size: 1.2rem;
+            padding: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background-color: #2980b9;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #3498db;
+        }
+
+        .btn-secondary {
+            background-color: #8e44ad;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #9b59b6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+       
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .weather-info h3 {
+                font-size: 1.5rem;
+            }
+
+            .weather-info p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body ng-app="weatherApp" ng-controller="WeatherController">
+    <div class="container">
+        <h1 class="text-center">Weather App</h1>
+
+        <div class="form-group">
+            <input type="text" class="form-control input-field" placeholder="Enter city name" ng-model="city">
+        </div>
+        <button class="btn btn-primary" ng-click="getWeather()">Get Weather</button>
+
+        <div class="weather-info mt-4" ng-if="weatherData">
+            <img ng-src="http://openweathermap.org/img/wn/{{ weatherData.weather[0].icon }}@2x.png" class="icon" alt="weather icon">
+            <h3>{{ weatherData.name }}</h3>
+            <p>{{ weatherData.weather[0].description | uppercase }}</p>
+            <p><strong>Temperature:</strong> {{ weatherData.main.temp }}°C</p>
+            <p><strong>Humidity:</strong> {{ weatherData.main.humidity }}%</p>
+            <p><strong>Wind Speed:</strong> {{ weatherData.wind.speed }} km/h</p>
+        </div>
+
+        <button class="btn btn-secondary" ng-click="goToAnotherPage()">Next</button>
+
+        <div class="footer">
+            <p>Weather data provided by <a href="https://openweathermap.org/" target="_blank" style="color: #2980b9;">OpenWeather</a></p>
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module('weatherApp', []);
+        app.controller('WeatherController', ['$scope', '$http', function ($scope, $http) {
+            $scope.city = '';
+            $scope.weatherData = null;
+
+            $scope.getWeather = function () {
+                if (!$scope.city.trim()) {
+                    alert('Please enter a city name!');
+                    return;
+                }
+
+                const apiKey = 'f94e29a28c6701444dd46bf288788198';
+                const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${$scope.city}&units=metric&appid=${apiKey}`;
+
+                $http.get(apiUrl).then(function (response) {
+                    $scope.weatherData = response.data;
+                }).catch(function (error) {
+                    console.error(error);
+                    alert('City not found or an error occurred. Please try again.');
+                });
+            };
+
+            $scope.goToAnotherPage = function () {
+                window.location.href = 'REV4.html';
+            };
+        }]);
+    </script>
+</body>
+
+</html>
